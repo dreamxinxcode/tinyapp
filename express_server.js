@@ -14,6 +14,14 @@ app.get('/', (req, res) => {
   res.send('Hello!');
 });
 
+app.get('/urls', (req, res) => {
+  const templateVars = {
+    urls: urlDatabase,
+    hello: 'hello world'
+  };
+  res.render('urls_index', templateVars);
+});
+
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
 });
