@@ -25,10 +25,9 @@ const users = {
   }
 };
 
-
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": { longURL: "http://www.lighthouselabs.ca", userID: ""},
+  "9sm5xK": { longURL: "http://www.google.com", userID: ""}
 };
 
 const getUserByEmail = (email) => {
@@ -64,7 +63,11 @@ app.get('/urls/new', (req, res) => {
   const templateVars = {
     email: req.cookies["email"]
   };
-  res.render('urls_new', templateVars);
+  if (users[req.cookies.user_id]) {
+    res.render('urls_new', templateVars);
+  } else {
+    res.redirect('/login');
+  }
 });
 
 // Read
@@ -126,8 +129,8 @@ app.get("/u/:shortURL", (req, res) => {
   const templateVars = {
     user: users[req.cookies.user_id],
   };
-  const longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL, templateVars);
+  const url = urlDatabase[req.params.shortURL].longURL;
+  res.redirect(url);
 });
 
 app.get('/register', (req, res) => {
