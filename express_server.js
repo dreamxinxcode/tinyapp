@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 const app = express();
 const PORT = 8080;
 
@@ -205,8 +206,9 @@ app.post('/register', (req, res) => {
   users[id] = {
     id,
     email,
-    password
+    password: bcrypt.hashSync(req.body.password, 10)
   };
+  console.log(users);
   res.cookie('user_id', id);
   res.redirect('/urls');
 });
@@ -227,7 +229,7 @@ app.post('/login', (req, res) => {
     res.status(403);
     res.send('Email does not exist');
     return;
-  } else if (user.password !== password) {
+  } else if (!bcrypt.compareSync(req.body.password, user.password)) {
     res.status(403);
     res.send('Email and password do not match');
     return;
